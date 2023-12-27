@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/knvi/kvne/internal/core/bgrewriteaof"
 	"github.com/knvi/kvne/internal/core/del"
 	"github.com/knvi/kvne/internal/core/expire"
 	"github.com/knvi/kvne/internal/core/get"
@@ -28,6 +29,8 @@ func Exec(cmd *Command, con io.ReadWriter) error {
 		res = del.RunCmd(cmd.Arguments, con)
 	case "expire":
 		res = expire.RunCmd(cmd.Arguments, con)
+	case "bgrewriteaof":
+		res = bgrewriteaof.RunCmd(cmd.Arguments)
 	default:
 		return fmt.Errorf("ERR unknown command '%s'", cmd.Name)
 	}
