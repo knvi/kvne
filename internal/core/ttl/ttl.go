@@ -17,20 +17,18 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 	k := args[0]
 	obj := storage.Get(k)
 	if obj == nil {
-		c.Write([]byte(":-2\r\n"))
-		return nil
+		return config.RESP_TTL_KEY_NOT_EXIST
 	}
 
-	if obj.Expire == -1 {
-		c.Write([]byte(":-1\r\n"))
-		return nil
+	exp, isSet := storage.GetExpiration(obj)
+	if !isSet {
+		return config.RESP_TTL_NO_EXPIRE
 	}
 
-	remain := obj.Expire - time.Now().UnixMilli()
+	remain := exp - time.Now().UnixMilli()
 
 	if remain < 0 {
-		c.Write([]byte(":-2\r\n"))
-		return nil
+		return config.RESP_TTL_NO_EXPIRE
 	}
 
 	c.Write(coder.Encode(int64(remain/1000), false))

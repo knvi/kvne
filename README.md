@@ -40,3 +40,4 @@ Run the project:
 - `ping [message]` - ping the server
 - `ttl key` - get the time to live for a key
 - `expire key seconds` - set a key's time to live in seconds
+- `bgrewriteaof` - asynchronously rewrite the append-only file

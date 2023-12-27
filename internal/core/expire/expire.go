@@ -1,9 +1,7 @@
 package expire
 
 import (
-	"errors"
 	"io"
-	"strconv"
 	"time"
 
 	"github.com/knvi/kvne/internal/coder"
@@ -17,18 +15,20 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 	}
 
 	k := args[0]
-	ttl, sec := strconv.ParseInt(args[1], 10, 64)
-	if sec != nil {
-		return coder.Encode(errors.New("ERR value is not an integer or out of range"), false)
-	}
-
 	obj := storage.Get(k)
 	if obj == nil {
-		c.Write([]byte(":0\r\n"))
-		return nil
+		return config.RESP_TTL_KEY_NOT_EXIST
 	}
 
-	obj.Expire = time.Now().UnixMilli() + ttl*1000
-	c.Write([]byte(":1\r\n"))
-	return nil
+	exp, isSet := storage.GetExpiration(obj)
+	if !isSet {
+		return config.RESP_TTL_NO_EXPIRE
+	}
+
+	remain := exp - int64(time.Now().UnixMilli())
+	if remain <= 0 {
+		storage.Del(k)
+		return config.RESP_TTL_KEY_NOT_EXIST
+	}
+	return coder.Encode(int64(remain/1000), true)
 }

@@ -2,7 +2,7 @@ package storage
 
 func evictFirst() {
 	for k := range Storage {
-		delete(Storage, k)
+		Del(k)
 		break
 	}
 }

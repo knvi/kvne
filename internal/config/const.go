@@ -13,6 +13,21 @@ var RESP_TTL_NO_EXPIRE = []byte(":-1\r\n")
 
 var AOF_FILE = "./kvne.aof"
 
+const (
+	OBJ_TYPE_STRING uint8 = 0
+)
+
+const (
+	OBJ_ENCODING_RAW uint8 = 0
+	OBJ_ENCODING_INT uint8 = 1
+)
+
+const (
+	ENGINE_WAITING = 1
+	ENGINE_RUNNING = 2
+	ENGINE_STOPPED = 3
+)
+
 func ErrWrongNumberOfArguments(cmd string) error {
     return fmt.Errorf("ERR wrong number of arguments for '%s' command", cmd)
 }

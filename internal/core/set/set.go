@@ -19,6 +19,7 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 	var expire int64 = -1
 
 	k, v = args[0], args[1]
+	o_type, o_enc := storage.DeduceType(v)
 	if len(args) > 2 {
 		ttl, err := strconv.ParseInt(args[3], 10, 64)
 		if err != nil {
@@ -27,7 +28,7 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 		expire = ttl * 1000
 	}
 
-	storage.Put(k, storage.Add(v, expire))
+	storage.Put(k, storage.Add(v, int64(expire), o_type, o_enc))
 	c.Write(coder.Encode("OK", true))
 	return nil
 }

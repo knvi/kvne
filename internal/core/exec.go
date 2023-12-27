@@ -8,6 +8,7 @@ import (
 	"github.com/knvi/kvne/internal/core/del"
 	"github.com/knvi/kvne/internal/core/expire"
 	"github.com/knvi/kvne/internal/core/get"
+	"github.com/knvi/kvne/internal/core/incr"
 	"github.com/knvi/kvne/internal/core/ping"
 	"github.com/knvi/kvne/internal/core/set"
 	"github.com/knvi/kvne/internal/core/ttl"
@@ -29,6 +30,8 @@ func Exec(cmd *Command, con io.ReadWriter) error {
 		res = del.RunCmd(cmd.Arguments, con)
 	case "expire":
 		res = expire.RunCmd(cmd.Arguments, con)
+	case "incr":
+		res = incr.RunCmd(cmd.Arguments)
 	case "bgrewriteaof":
 		res = bgrewriteaof.RunCmd(cmd.Arguments)
 	default:

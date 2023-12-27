@@ -2,7 +2,6 @@ package get
 
 import (
 	"io"
-	"time"
 
 	"github.com/knvi/kvne/internal/coder"
 	"github.com/knvi/kvne/internal/config"
@@ -17,16 +16,13 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 	k := args[0]
 	obj := storage.Get(k)
 	if obj == nil {
-		c.Write([]byte("$-1" + coder.CRLF))
-		return nil
+		return config.RESP_NIL
 	}
 
-	if obj.Expire != -1 && obj.Expire <= time.Now().UnixMilli() {
-		c.Write([]byte("$-1" + coder.CRLF))
-		return nil
+	if storage.HasExpired(obj) {
+		storage.Del(k)
+		return config.RESP_NIL
 	}
 
-	c.Write(coder.Encode(obj.Value, false))
-
-	return nil
+	return coder.Encode(obj.Value, false)
 }

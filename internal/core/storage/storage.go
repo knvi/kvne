@@ -1,31 +1,30 @@
 package storage
 
 import (
-	"time"
-
 	"github.com/knvi/kvne/internal/config"
 )
 
 type Object struct {
 	Value	interface{}
-	Expire	int64
+	TypeEncoding uint8
 }
 
 var Storage map[string]*Object
+var expires map[*Object]int64
 
 func init() {
 	Storage = make(map[string]*Object)
+	expires = make(map[*Object]int64)
 }
 
-func Add(value interface{}, expire int64) *Object {
-	var expireAt int64 = -1
-	if expire > 0 {
-		expireAt = int64(time.Now().Unix()) + expire
-	}
-
+func Add(value interface{}, ttl int64, o_type uint8, o_enc uint8) *Object {
 	obj := &Object{
 		Value: value,
-		Expire: expireAt,
+		TypeEncoding: o_type | o_enc,
+	}
+
+	if ttl > 0 {
+		SetExpiration(obj, ttl)
 	}
 
 	return obj
@@ -34,7 +33,7 @@ func Add(value interface{}, expire int64) *Object {
 func Get(k string) *Object {
 	v := Storage[k]
 	if v != nil {
-		if v.Expire != -1 && v.Expire <= time.Now().UnixMilli() {
+		if HasExpired(v) {
 			Del(k)
 			return nil
 		}
@@ -52,8 +51,9 @@ func Put(k string, v *Object) {
 }
 
 func Del(k string) bool {
-	if _, exist := Storage[k]; exist {
+	if obj, exist := Storage[k]; exist {
 		delete(Storage, k)
+		delete(expires, obj)
 		return true
 	}
 
