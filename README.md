@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Go 1.16 or higher
+- Go 1.20 or higher
 
 ### Installing
 
