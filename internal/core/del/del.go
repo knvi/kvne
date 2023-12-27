@@ -7,7 +7,7 @@ import (
 	"github.com/knvi/kvne/internal/core/storage"
 )
 
-func RunCmd(args []string, c io.ReadWriter) error {
+func RunCmd(args []string, c io.ReadWriter) []byte {
 	delCount := 0
 
 	for _, k := range args {
@@ -16,6 +16,5 @@ func RunCmd(args []string, c io.ReadWriter) error {
 		}
 	}
 
-	c.Write(coder.Encode(delCount, false))
-	return nil
+	return coder.Encode(delCount, false)
 }

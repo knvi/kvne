@@ -13,20 +13,25 @@ import (
 )
 
 func Exec(cmd *Command, con io.ReadWriter) error {
+	var res []byte
+
 	switch cmd.Name {
 	case "ping":
-		return ping.RunCmd(cmd.Arguments, con)
+		res = ping.RunCmd(cmd.Arguments, con)
 	case "get":
-		return get.RunCmd(cmd.Arguments, con)
+		res = get.RunCmd(cmd.Arguments, con)
 	case "set":
-		return set.RunCmd(cmd.Arguments, con)
+		res = set.RunCmd(cmd.Arguments, con)
 	case "ttl":
-		return ttl.RunCmd(cmd.Arguments, con)
+		res = ttl.RunCmd(cmd.Arguments, con)
 	case "del":
-		return del.RunCmd(cmd.Arguments, con)
+		res = del.RunCmd(cmd.Arguments, con)
 	case "expire":
-		return expire.RunCmd(cmd.Arguments, con)
+		res = expire.RunCmd(cmd.Arguments, con)
+	default:
+		return fmt.Errorf("ERR unknown command '%s'", cmd.Name)
 	}
 
-	return fmt.Errorf("unknown command: %s", cmd.Name)
+	_, err := con.Write(res)
+	return err
 }

@@ -6,18 +6,20 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/knvi/kvne/internal/coder"
+	"github.com/knvi/kvne/internal/config"
 	"github.com/knvi/kvne/internal/core/storage"
 )
 
-func RunCmd(args []string, c io.ReadWriter) error {
+func RunCmd(args []string, c io.ReadWriter) []byte {
 	if len(args) < 2 {
-		return errors.New("ERR wrong number of arguments for 'expire' command")
+		return coder.Encode(config.ErrWrongNumberOfArguments("expire"), false)
 	}
 
 	k := args[0]
 	ttl, sec := strconv.ParseInt(args[1], 10, 64)
 	if sec != nil {
-		return errors.New("ERR value is not an integer or out of range")
+		return coder.Encode(errors.New("ERR value is not an integer or out of range"), false)
 	}
 
 	obj := storage.Get(k)

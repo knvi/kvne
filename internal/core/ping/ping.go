@@ -1,17 +1,17 @@
 package ping
 
 import (
-	"errors"
 	"io"
 
 	"github.com/knvi/kvne/internal/coder"
+	"github.com/knvi/kvne/internal/config"
 )
 
-func RunCmd(args []string, con io.ReadWriter) error {
+func RunCmd(args []string, con io.ReadWriter) []byte {
 	var buf []byte
 
 	if len(args) > 1 {
-		return errors.New("ERR wrong number of arguments for 'ping' command")
+		return coder.Encode(config.ErrWrongNumberOfArguments("ping"), false)
 	}
 	
 	if len(args) == 1 {
@@ -20,7 +20,5 @@ func RunCmd(args []string, con io.ReadWriter) error {
 		buf = coder.Encode("pong", true)
 	}
 
-	_, err := con.Write(buf)
-
-	return err
+	return buf
 }

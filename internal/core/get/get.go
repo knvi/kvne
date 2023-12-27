@@ -1,17 +1,17 @@
 package get
 
 import (
-	"errors"
 	"io"
 	"time"
 
 	"github.com/knvi/kvne/internal/coder"
+	"github.com/knvi/kvne/internal/config"
 	"github.com/knvi/kvne/internal/core/storage"
 )
 
-func RunCmd(args []string, c io.ReadWriter) error {
+func RunCmd(args []string, c io.ReadWriter) []byte {
 	if len(args) != 1 {
-		return errors.New("ERR wrong number of arguments for 'get' command")
+		return coder.Encode(config.ErrWrongNumberOfArguments("get"), false)
 	}
 
 	k := args[0]
