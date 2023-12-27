@@ -5,13 +5,32 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
+	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 
 	"github.com/knvi/kvne/internal/coder"
 	"github.com/knvi/kvne/internal/config"
 	"github.com/knvi/kvne/internal/core"
+	"github.com/knvi/kvne/internal/core/events"
 )
+
+var EngineStatus int32 = config.ENGINE_WAITING
+
+func WaitForSignal(wg *sync.WaitGroup, signals chan os.Signal) {
+	defer wg.Done()
+	<-signals // wait for a signal
+	for atomic.LoadInt32(&EngineStatus) == config.ENGINE_RUNNING {}
+
+	if !atomic.CompareAndSwapInt32(&EngineStatus, config.ENGINE_RUNNING, config.ENGINE_STOPPED) {
+		return
+	}
+
+	events.Shutdown()
+	os.Exit(0)
+}
 
 func readCommandFD(fd int) (*core.Command, error) {
 	var buf []byte = make([]byte, 512)

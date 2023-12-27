@@ -3,6 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 
 	"github.com/knvi/kvne/internal/config"
 	"github.com/knvi/kvne/internal/server"
@@ -16,5 +20,14 @@ func init() {
 
 func main() {
 	fmt.Println("Starting a kvne database...");
+
+	// events
+	var signals = make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	server.RunAsyncTCPServer();
+	server.WaitForSignal(&wg, signals)
 }
