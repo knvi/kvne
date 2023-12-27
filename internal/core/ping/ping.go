@@ -7,7 +7,7 @@ import (
 	"github.com/knvi/kvne/internal/coder"
 )
 
-func Run(args []string, con io.ReadWriter) error {
+func RunCmd(args []string, con io.ReadWriter) error {
 	var buf []byte
 
 	if len(args) > 1 {

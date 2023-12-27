@@ -30,3 +30,13 @@ Run the project:
 ```sh
 ./main
 ```
+
+## Usage
+
+### list of commands
+- `set key value` - set the string value of a key
+- `get key` - get the value of a key
+- `del key [key ...]` - delete one or more keys
+- `ping [message]` - ping the server
+- `ttl key` - get the time to live for a key
+- `expire key seconds` - set a key's time to live in seconds
