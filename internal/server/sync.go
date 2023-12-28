@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"sync"
 
 	"github.com/knvi/kvne/internal/coder"
 	"github.com/knvi/kvne/internal/config"
@@ -33,7 +34,8 @@ func respond(cmd *core.Command, conn net.Conn)  {
 	}
 }
 
-func StartServer() {
+func StartServer(wg *sync.WaitGroup) {
+	defer wg.Done();
 	log.Println("Starting server on ", fmt.Sprintf("%s:%d", config.Host, config.Port));
 
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", config.Host, config.Port));

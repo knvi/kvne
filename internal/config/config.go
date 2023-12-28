@@ -5,3 +5,5 @@ var Port int = 6379
 var MaxConnection int = 1000
 
 var KeyNumLimit int = 1000000
+
+var EvictMode = EVICT_MODE_LRU

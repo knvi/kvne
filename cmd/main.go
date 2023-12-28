@@ -15,6 +15,7 @@ import (
 func init() {
 	flag.StringVar(&config.Host, "host", "0.0.0.0", "Host to listen on")
 	flag.IntVar(&config.Port, "port", 6379, "Port to listen on")
+	flag.IntVar(&config.EvictMode, "evict", config.EVICT_MODE_LRU, "Eviction mode 0 - NONE, 1 - LRU, 2 - LFU")
 	flag.Parse()
 }
 
@@ -30,4 +31,6 @@ func main() {
 
 	server.RunAsyncTCPServer();
 	server.WaitForSignal(&wg, signals)
+
+	wg.Wait()
 }

@@ -23,11 +23,6 @@ func WaitForSignal(wg *sync.WaitGroup, signals chan os.Signal) {
 	defer wg.Done()
 	<-signals // wait for a signal
 	for atomic.LoadInt32(&EngineStatus) == config.ENGINE_RUNNING {}
-
-	if !atomic.CompareAndSwapInt32(&EngineStatus, config.ENGINE_RUNNING, config.ENGINE_STOPPED) {
-		return
-	}
-
 	events.Shutdown()
 	os.Exit(0)
 }

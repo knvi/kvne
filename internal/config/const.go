@@ -28,6 +28,12 @@ const (
 	ENGINE_STOPPED = 3
 )
 
+const (
+	EVICT_MODE_NONE = 0
+	EVICT_MODE_LRU  = 1
+	EVICT_MODE_LFU  = 2
+)
+
 func ErrWrongNumberOfArguments(cmd string) error {
     return fmt.Errorf("ERR wrong number of arguments for '%s' command", cmd)
 }

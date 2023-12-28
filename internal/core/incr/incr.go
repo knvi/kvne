@@ -17,7 +17,7 @@ func RunCmd(args []string) []byte {
 	k := args[0]
 	obj := storage.Get(k)
 	if obj == nil {
-		obj = storage.Add("0", -1, config.OBJ_TYPE_STRING, config.OBJ_ENCODING_INT)
+		obj = storage.NewObject("0", -1, config.OBJ_TYPE_STRING, config.OBJ_ENCODING_INT)
 		storage.Put(k, obj)
 	}
 

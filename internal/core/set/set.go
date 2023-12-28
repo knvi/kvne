@@ -28,7 +28,7 @@ func RunCmd(args []string, c io.ReadWriter) []byte {
 		expire = ttl * 1000
 	}
 
-	storage.Put(k, storage.Add(v, int64(expire), o_type, o_enc))
+	storage.Put(k, storage.NewObject(v, int64(expire), o_type, o_enc))
 	c.Write(coder.Encode("OK", true))
 	return nil
 }
